@@ -13,7 +13,16 @@
 				<!-- Project Details Go Here -->
 				<h2>{{ad.title}}</h2>
 				<div class="item-intro text-muted">
-					<h4>Typ av annons: {{ad.typeName}}</h4>
+					<h4>
+						Typ av annons: {{ad.typeName}}
+						{% if ad.userId != user.id %}
+							{% if ad.distance %}
+								<p>{{ad.distance}} bort</p>
+							{% endif %}
+						{% else %}
+							Det här är din annons!
+						{% endif %}
+					</h4>
 				</div>
 				<p>{{ad.content}}</p>
 				<img class="img-responsive" src="{{ad.image}}" alt="">

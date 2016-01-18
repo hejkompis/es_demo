@@ -88,7 +88,7 @@
 						<p class="text-muted">{{ad.dateCreated}}</p>
 						{% if ad.userId != user.id %}
 							{% if ad.distance %}
-								<p>Du är {{ad.distance}} bort</p>
+								<p>{{ad.distance}} bort</p>
 							{% endif %}
 						{% else %}
 							Det här är din annons!

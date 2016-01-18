@@ -221,8 +221,23 @@ class Ads {
 	static public function getSpecificAd($input){ // 
 		
 		$id = DB::clean($input['id']);
+		$user = User::checkLoginStatus(false);
 
-		$sql = 	"SELECT ads.id 		as id, 
+		if($user) {
+			$earthRadius = 6371000;
+			$sqlReturnDistance = " ROUND(
+				".$earthRadius." * ACOS(  
+					SIN( ".$user->latitude."*PI()/180 ) * SIN( ads.latitude*PI()/180 )
+					+ COS( ".$user->latitude."*PI()/180 ) * COS( ads.latitude*PI()/180 )  *  COS( (ads.longitude*PI()/180) - (".$user->longitude."*PI()/180) )   
+				) 
+			, 0) AS distance, ";
+		}
+		else {
+			$sqlReturnDistance = "";
+		}
+
+		$sql = 	"SELECT ".$sqlReturnDistance."
+				ads.id 				as id, 
 				ads.title 			as title, 
 				ads.content 		as content, 
 				ads.date_created 	as date_created, 
