@@ -1,0 +1,138 @@
+    <section class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Skapa ny användare</h2>
+                    <h3 class="section-subheading text-muted">Skapa ny användare för att kunna logga in</h3>
+                </div>
+            </div>
+
+			<div class="container">
+				<div class="row">
+				<div class="col-xs-12">
+					<form action="/user/savenewuser/" method="post">
+						<div class="form-group">
+							<label for="firstname"><h4>Förnamn</h4></label>
+							<input type="text" id="firstname" name="firstname" class="form-control" placeholder="John">
+						</div>
+						<div class="form-group">
+							<label for="lastname"><h4>Efternamn</h4></label>
+							<input type="text" id="lastname" name="lastname" class="form-control" placeholder="Doe">
+						</div>
+						
+						<h4>Ange din adress</h4>
+						<p class="small">Detta gör du genom att högerklicka på din adress på kartan och välja "Placera markör"</p>
+						<div class="gmap" id="gmap"></div>
+						<div class="form-group">
+
+							<label>Angiven adress</label>
+							<address id="gmaps_address">Ingen adress angiven</address>
+							<input type="hidden" id="address" name="address" value="">
+							<input type="hidden" id="latitude" name="latitude" value="" />
+							<input type="hidden" id="longitude" name="longitude" value="" />
+
+						</div>
+
+						<div class="form-group">
+							<label for="email"><h4>E-post</h4></label>
+							<input type="text" id="email" name="email" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="password"><h4>Lösenord</h4></label>
+							<input type="password" id="password" name="password" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="repeatedpassword"><h4>Upprepa Lösenord</h4></label>
+							<input type="password" id="repeatedpassword" name="repeatedpassword" class="form-control">
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">Skapa användare</button>
+						</div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script>
+	
+	$(document).ready(function(){
+	
+		$('#gmap').ready(function(){
+			
+			_standard_lat = '59.339375';
+			_standard_lng = '18.067189';
+			var map;
+
+			map = new GMaps({
+		
+				div: '#gmap',
+				lat: _standard_lat,
+				lng: _standard_lng,
+				zoom: 15,
+			    zoomControl : true,
+			    zoomControlOpt: {
+					style : 'SMALL',
+					position: 'TOP_LEFT'
+				},
+				panControl : false
+		
+			});
+			
+			map.setContextMenu({
+				control: 'map',
+				options: [{
+					action: function(e) {
+						var index = map.markers.length;
+						var lat = e.latLng.lat();
+						var lng = e.latLng.lng();
+			
+						if(map.markers.length == 0) {
+						
+							map.addMarker({
+								
+								lat: lat,
+								lng: lng
+								//title: 'Marker #' + index
+								
+							});
+							
+							$('#latitude').val(lat);
+							$('#longitude').val(lng);
+						
+						}
+						
+						else {
+										
+							var latlng = new google.maps.LatLng(lat, lng);
+							map.markers[0].setPosition(latlng);
+							$('#latitude').val(lat);
+							$('#longitude').val(lng);
+			
+						}
+						
+						var opt = {
+							lat : lat,
+							lng : lng,
+							callback : function(results, status) {
+								if (status == google.maps.GeocoderStatus.OK) {
+									$('#gmaps_address').text(results[0].formatted_address);
+									$('input#address').val(results[0].formatted_address);
+								}
+							}
+						}
+						
+						GMaps.geocode(opt);
+						
+					},
+					title: 'Placera markör',
+					name: 'place_marker'
+				}]
+			});
+						
+		});
+			
+	});
+	
+</script>
